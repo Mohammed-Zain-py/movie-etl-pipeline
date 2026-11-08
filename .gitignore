@@ -1,0 +1,19 @@
+# Virtual Environment
+venv/
+__pycache__/
+JD and Task/
+
+# Source Data
+movies.csv
+ratings.csv
+links.csv
+
+# Database and Tools
+movies.db
+sqlite3.exe
+
+# The old regex etl file
+etl_old.py
+
+# Testing scripts
+testcases_check.py
