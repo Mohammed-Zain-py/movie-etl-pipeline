@@ -85,15 +85,19 @@ The pipeline is designed to be rerun safely. Rerunning with the same source data
 ## 5. Challenges and How They Were Handled
 
 **Challenge: Matching MovieLens Titles with OMDb**
+
 **Solution:** My initial approach was to clean the movie titles using regular expressions and use the cleaned titles along with release years to query the OMDb API. However, this approach involved several title-cleaning rules for alternate titles, trailing articles, and other variations, and still couldn't reliably avoid mismatches. While exploring the dataset further, I discovered that `links.csv` contained an `imdb_id` mapping for each MovieLens `movie_id`. I changed the approach to use these IMDb IDs directly for OMDb lookups instead of relying on title matching. This made the enrichment process more reliable and eliminated the need for the additional title-cleaning logic.
 
 **Challenge: API Request Pacing and Rate Limits**
+
 **Solution:** I added a small delay (`time.sleep(0.08)`) between API requests to introduce a short pause between consecutive calls. If the API returns a rate-limit error, the script stops further API calls and proceeds with loading the MovieLens data and any OMDb information successfully retrieved up to that point.
 
 **Challenge: Missing or Invalid API Keys**
+
 **Solution:** If the environment variable is missing, the script exits immediately. If OMDb reports an invalid API key, either through its API response or an HTTP 401/403 response, the script exits with a critical error. If the response indicates an API limit instead, the script stops further API requests and proceeds to the database loading phase.
 
 **Challenge: Data Types for SQL**
+
 **Solution:** pandas often converts missing integer data to floats (`NaN`). I added cleaning steps to handle missing and invalid values before loading the data. Rating values are checked against the valid range, and user IDs, movie IDs, and timestamps are checked to ensure they contain whole numbers. Missing release years are retained as `NULL` rather than using placeholder values.
 
 ## 6. Analytical Queries
